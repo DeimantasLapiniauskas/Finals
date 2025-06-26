@@ -8,6 +8,8 @@ const AuthContext = createContext({
   account: {},
   login: async () => {},
   register: async (username, roles, password) => {
+    console.log("oh no");
+
     await postData("/register", {
       username,
       roles,
@@ -34,6 +36,7 @@ export const AuthProvider = ({ children }) => {
     }
     return null;
   });
+
   useEffect(() => {
     const checkJwtExpiration = () => {
       const maybeJwt = localStorage.getItem("jwt");
@@ -69,12 +72,20 @@ export const AuthProvider = ({ children }) => {
     setAuth(jwt);
     navigate("/");
   };
+
   const register = async (username, roles, password) => {
-    await api.post("/register", {
-      username,
-      roles,
-      password,
-    });
+    try {
+        
+    
+    await postData("/register", {
+        username,
+        roles,
+        password,
+      });
+      navigate("/login");}
+      catch (error) {
+        
+      }
   };
 
   const logout = () => {

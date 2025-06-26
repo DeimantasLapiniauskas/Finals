@@ -1,8 +1,8 @@
-*{
-    background-color: antiquewhite;
+* {
+  background-color: antiquewhite;
 }
-* *{
-    background-color: inherit;
+* * {
+  background-color: inherit;
 }
 .MechanicBox {
   border: 1px solid black;
@@ -22,5 +22,4 @@
   max-width: 50%;
   min-width: 30%;
   max-height: 20vh;
-  
 }

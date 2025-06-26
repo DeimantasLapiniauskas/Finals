@@ -21,34 +21,28 @@ export const Login = () => {
   };
 
   return (
-    <main className="grid place-items-center h-screen">
-      <div className="flex flex-col gap-2 items-center">
+    <main>
+      <div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
-            <legend className="fieldset-legend">Login</legend>
+          <fieldset>
+            <legend>Login</legend>
 
-            <label className="fieldset-label">Username</label>
+            <label>Username</label>
             <input
               {...register("username")}
               type="text"
-              className="input"
               placeholder="Enter username"
             />
 
-            <label className="fieldset-label">Password</label>
+            <label>Password</label>
             <input
               {...register("password")}
               type="password"
-              className="input"
               placeholder="Enter password"
             />
 
-            <button type="submit" className="btn btn-primary mt-4">
-              Login
-            </button>
-            <NavLink to="/register" className="underline text-center mt-2">
-              Register
-            </NavLink>
+            <button type="submit">Login</button>
+            <NavLink to="/register">Register</NavLink>
           </fieldset>
         </form>
         {error}
