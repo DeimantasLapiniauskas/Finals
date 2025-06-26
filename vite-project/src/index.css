@@ -1,3 +1,9 @@
+*{
+    background-color: antiquewhite;
+}
+* *{
+    background-color: inherit;
+}
 .MechanicBox {
   border: 1px solid black;
 }
@@ -9,9 +15,12 @@
   height: 80vh;
   width: 100vw;
   flex-wrap: wrap;
+  gap: 3px;
+  border: 3px lightgreen solid;
 }
 .MainPage * {
   max-width: 50%;
   min-width: 30%;
   max-height: 20vh;
+  
 }
