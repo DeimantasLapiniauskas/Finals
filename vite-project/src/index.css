@@ -1,0 +1,11 @@
+.MechanicBox {
+  border: 1px solid black;
+}
+
+.MainPage {
+  background-color: aliceblue;
+  display: flex;
+}
+.MainPage * {
+  max-width: 50%;
+}

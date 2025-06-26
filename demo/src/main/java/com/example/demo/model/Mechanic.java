@@ -5,13 +5,13 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "mechanics")
 public class Mechanic {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String fullName;
 
-    @Column(name = "experienceYears")
     private Double experienceYears;
 
     public Mechanic(long id, String fullName, Double experienceYears) {

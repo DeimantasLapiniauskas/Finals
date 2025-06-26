@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.MechanicRequestDTO;
 import com.example.demo.model.Mechanic;
 import com.example.demo.service.MechanicService;
 import jakarta.validation.Valid;
@@ -28,16 +27,25 @@ public class MechanicsController {
         return ResponseEntity.ok(mechanicService.findAll());
     }
 
+    @GetMapping("/mechanics/{id}")
+    public ResponseEntity<Object> getOneMechanic(@PathVariable long id) {
+        if (!mechanicService.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mechanic not found");
+        }
+        return ResponseEntity.ok(mechanicService.findById(id).get());
+    }
+
     @PostMapping("/mechanics")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     public ResponseEntity<Mechanic> createMechanic(@Valid @RequestBody Mechanic mechanic) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(mechanicService.save(mechanic));
     }
 
     @PutMapping("/mechanics/{id}")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     public ResponseEntity<Object> updateMechanic(@PathVariable long id, @Valid @RequestBody Mechanic mechanic) {
-        if (mechanicService.existsById(id)) {
+        if (!mechanicService.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mechanic not found");
         }
         Mechanic mechanicFromDB = mechanicService.findById(id).get();
@@ -49,7 +57,7 @@ public class MechanicsController {
     @DeleteMapping("/mechanics/{id}")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     public ResponseEntity<Object> deleteMechanic(@PathVariable long id) {
-        if (mechanicService.existsById(id)) {
+        if (!mechanicService.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mechanic not found");
         }
         mechanicService.deleteById(id);
