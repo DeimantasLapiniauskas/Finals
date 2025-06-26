@@ -2,20 +2,19 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserMapping;
 import com.example.demo.dto.UserRequestDTO;
-import com.example.demo.dto.UserResponseDTO;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("/api")
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -26,24 +25,12 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        return ResponseEntity.ok(UserMapping.toUserResponseDTOList(userService.findAll()));
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-
-        Optional<User> user = userService.findById(id);
-        return user
-                .map(value -> ResponseEntity.ok(UserMapping.toUserOutDTO(value)))
-                .orElseGet(() -> ResponseEntity.notFound().build()
-                );
-    }
-
-    @PostMapping
-    public ResponseEntity<Object> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-
+    @PostMapping("/register")
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are already registered!");
+        }
         if (userService.existsByUsername(userRequestDTO.username())) {
             return ResponseEntity.badRequest().body("User with this username already exists.");
         }
@@ -52,20 +39,12 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapping.toUserOutDTO(user));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePassword(@PathVariable Long id, @RequestBody String password) {
-        Optional<User> user = userService.findById(id);
-        if (user.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        user.get().setPassword(passwordEncoder.encode(password));
-        userService.save(user.get());
-
-        return ResponseEntity.ok(UserMapping.toUserOutDTO(user.get()));
+        return ResponseEntity.created(
+                        ServletUriComponentsBuilder.fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(user.getId())
+                                .toUri())
+                .body(UserMapping.toUserOutDTO(user));
     }
 
 
